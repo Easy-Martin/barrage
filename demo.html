@@ -1,0 +1,78 @@
+
+<html lang="zh-CN" >
+
+<head>
+	<title>TYGF</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<style>
+	.layout {
+		width: 600px;
+		height: 400px;
+		background: #333;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.layout span {
+		white-space: nowrap;
+		position: absolute;
+		right: -100px;
+		color: #fff;
+		font-weight: bold;
+	}
+</style>
+
+<body>
+	<div class="layout">
+
+	</div>
+	<button id="open">打开弹幕</button>
+	<button id="close">关闭弹幕</button>
+</body>
+<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript">
+	var barrage = function() {
+		this.name = 'txt';
+		this.arr = [];
+	}
+	barrage.prototype.add = function(item) {
+		this.arr.push(item);
+		if (this.callback) {
+			this.callback(item);
+		}
+	}
+	var arr = new txt()
+	arr.callback = function(item) {
+		$('.layout').append('<span>' + item + '</span>');
+		var _index = $('.layout').find('span').length - 1;
+		var _top = Math.random() * 360 + 20;
+		$('.layout').find('span').eq(_index).css('top', _top).animate({
+			'right': '700px'
+		}, 5000, 'linear', function() {
+			$(this).remove();
+		});
+	}
+	var _num = 0;
+	var _time = null;
+	_time = setInterval(function() {
+		_num++
+		arr.add('我是弹幕' + _num);
+	}, 100);
+
+	$('#open').on('click', function() {
+		$('.layout').html('');
+		clearInterval(_time);
+		_time = setInterval(function() {
+			_num++
+			arr.add('我是弹幕' + _num);
+		}, 100);
+	})
+	$('#close').on('click', function() {
+		clearInterval(_time);
+		$('.layout').find('span').css('display', 'none').stop()
+	})
+</script>
+
+</html>
