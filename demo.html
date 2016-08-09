@@ -35,17 +35,15 @@
 <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <script type="text/javascript">
 	var barrage = function() {
-		this.name = 'txt';
+		this.name = 'barrage';
 		this.arr = [];
-	}
+	};
 	barrage.prototype.add = function(item) {
 		this.arr.push(item);
-		if (this.callback) {
-			this.callback(item);
-		}
-	}
-	var arr = new barrage();
-	arr.callback = function(item) {
+		this.callback(item);
+	};
+
+	barrage.prototype.callback = function(item) {
 		$('.layout').append('<span>' + item + '</span>');
 		var _index = $('.layout').find('span').length - 1;
 		var _top = Math.random() * 360 + 20;
@@ -64,6 +62,7 @@
 		this.status = _status;
 		this.num = _num;
 		this.timer = _timer;
+		this.barrage = new barrage();
 	}
 	taskFn.prototype.start = function(){
 		var _self = this;
@@ -72,7 +71,7 @@
 		this.status = 1;
 		_self.timer = setInterval(function(){
 			_self.num++;
-			arr.add('我是弹幕' + _self.num);
+			_self.barrage.add('我是弹幕' + _self.num);
 		},100)
 	}
 	taskFn.prototype.stop = function () {
