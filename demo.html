@@ -34,9 +34,10 @@
 </body>
 <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <script type="text/javascript">
-	var barrage = function() {
+	var barrage = function(ele) {
 		this.name = 'barrage';
 		this.arr = [];
+		this.ele = ele;
 	};
 	barrage.prototype.add = function(item) {
 		this.arr.push(item);
@@ -44,10 +45,11 @@
 	};
 
 	barrage.prototype.callback = function(item) {
-		$('.layout').append('<span>' + item + '</span>');
-		var _index = $('.layout').find('span').length - 1;
+		var _self = this;
+		$(_self.ele).append('<span>' + item + '</span>');
+		var _index = $(_self.ele).find('span').length - 1;
 		var _top = Math.random() * 360 + 20;
-		$('.layout').find('span').eq(_index).css('top', _top).animate({
+		$(_self.ele).find('span').eq(_index).css('top', _top).animate({
 			'right': '700px'
 		}, 5000, 'linear', function() {
 			$(this).remove();
@@ -58,11 +60,11 @@
 	var _timer = null;
 	var _status = 0;//0为关闭，1为开始
 
-	var taskFn = function(){
+	var taskFn = function(ele){
 		this.status = _status;
 		this.num = _num;
 		this.timer = _timer;
-		this.barrage = new barrage();
+		this.barrage = new barrage(ele);
 	}
 	taskFn.prototype.start = function(){
 		var _self = this;
@@ -82,7 +84,7 @@
 		clearInterval(_self.timer);
 		$('.layout').find('span').stop().remove();
 	}
-	var queen = new taskFn();
+	var queen = new taskFn('.layout');
 	$('#open').on('click', function() {
 		queen.start();
 	});
