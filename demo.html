@@ -44,7 +44,7 @@
 			this.callback(item);
 		}
 	}
-	var arr = new barrage()
+	var arr = new barrage();
 	arr.callback = function(item) {
 		$('.layout').append('<span>' + item + '</span>');
 		var _index = $('.layout').find('span').length - 1;
@@ -54,24 +54,41 @@
 		}, 5000, 'linear', function() {
 			$(this).remove();
 		});
-	}
-	var _num = 0;
-	var _time = null;
-	_time = setInterval(function() {
-		_num++
-		arr.add('我是弹幕' + _num);
-	}, 100);
+	};
 
-	$('#open').on('click', function() {
-		clearInterval(_time);
-		_time = setInterval(function() {
-			_num++
-			arr.add('我是弹幕' + _num);
-		}, 100);
-	})
-	$('#close').on('click', function() {
-		clearInterval(_time);
+	var _num = 0;
+	var _timer = null;
+	var _status = 0;//0为关闭，1为开始
+
+	var taskFn = function(){
+		this.status = _status;
+		this.num = _num;
+		this.timer = _timer;
+	}
+	taskFn.prototype.start = function(){
+		var _self = this;
+		if(_self.status == 1)
+			return;
+		this.status = 1;
+		_self.timer = setInterval(function(){
+			_self.num++;
+			arr.add('我是弹幕' + _self.num);
+		},100)
+	}
+	taskFn.prototype.stop = function () {
+		var _self = this;
+		if(this.status == 0)
+			return;
+		this.status = 0;
+		clearInterval(_self.timer);
 		$('.layout').find('span').stop().remove();
+	}
+	var queen = new taskFn();
+	$('#open').on('click', function() {
+		queen.start();
+	});
+	$('#close').on('click', function() {
+		queen.stop();
 	})
 </script>
 
